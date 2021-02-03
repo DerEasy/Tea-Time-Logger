@@ -1,0 +1,163 @@
+package com.easy.teatimelogger;
+
+import android.annotation.SuppressLint;
+import android.content.ContentValues;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.CalendarView;
+import android.database.Cursor;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.time.LocalDate;
+import java.util.Calendar;
+
+import static com.easy.teatimelogger.MainActivity.pMainActivityRef;
+import static com.easy.teatimelogger.MainActivity.pDatabase;
+import static com.easy.teatimelogger.MainActivity.c;
+
+public class LogActivity extends AppCompatActivity {
+    public CalendarView calendar;
+    public Cursor valueCursor;
+    public int totalTimeOnSelectedDay;
+    public TextView pDateText, pSessionMinutesText, pSessionSecondsText, pTotalTimeOnSelectedDay;
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_log);
+
+        LogDBHelper dbHelper = new LogDBHelper(this);
+        pDatabase = dbHelper.getWritableDatabase();
+
+        pDateText = (TextView) findViewById(R.id.textLogDate);
+        pSessionMinutesText = (TextView) findViewById(R.id.textLogSessionMinutes);
+        pSessionSecondsText = (TextView) findViewById(R.id.textLogSessionSeconds);
+        pTotalTimeOnSelectedDay = (TextView) findViewById(R.id.textTotalTimeOnSelectedDay);
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        c = Calendar.getInstance();
+        pMainActivityRef.get().pAdapter = new LogAdapter(this, getTodayItems(String.valueOf(c.get(Calendar.YEAR)), String.valueOf(c.get(Calendar.MONTH) + 1), String.valueOf(c.get(Calendar.DAY_OF_MONTH))));
+        recyclerView.setAdapter(pMainActivityRef.get().pAdapter);
+        callTTOSD();
+
+        calendar = (CalendarView) findViewById(R.id.calendarView);
+        calendar.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
+            pMainActivityRef.get().pAdapter = new LogAdapter(this, getTodayItems(String.valueOf(year), String.valueOf(month + 1), String.valueOf(dayOfMonth)));
+            recyclerView.setAdapter(pMainActivityRef.get().pAdapter);
+
+            totalTimeOnSelectedDay = 0;
+            valueCursor = getTodayValues(String.valueOf(year), String.valueOf(month + 1), String.valueOf(dayOfMonth));
+            valueCursor.moveToFirst();
+
+            for (int i = 0; i < valueCursor.getCount(); i++) {
+                totalTimeOnSelectedDay += valueCursor.getInt(valueCursor.getColumnIndex("seconds"));
+                totalTimeOnSelectedDay += valueCursor.getInt(valueCursor.getColumnIndex("minutes")) * 60;
+                valueCursor.moveToNext();
+            }
+
+            if (minutesHaveDoubleDigits() && secondsHaveDoubleDigits()) {
+                pTotalTimeOnSelectedDay.setText("Total time on this day:    " + (totalTimeOnSelectedDay / 60) + ":" + (totalTimeOnSelectedDay % 60));
+            } else if (!minutesHaveDoubleDigits() && !secondsHaveDoubleDigits()) {
+                pTotalTimeOnSelectedDay.setText("Total time on this day:    0" + (totalTimeOnSelectedDay / 60) + ":0" + (totalTimeOnSelectedDay % 60));
+            } else if (!minutesHaveDoubleDigits() && secondsHaveDoubleDigits()) {
+                pTotalTimeOnSelectedDay.setText("Total time on this day:    0" + (totalTimeOnSelectedDay / 60) + ":" + (totalTimeOnSelectedDay % 60));
+            } else if (minutesHaveDoubleDigits() && !secondsHaveDoubleDigits()) {
+                pTotalTimeOnSelectedDay.setText("Total time on this day:    " + (totalTimeOnSelectedDay / 60) + ":0" + (totalTimeOnSelectedDay % 60));
+            } else {
+                pTotalTimeOnSelectedDay.setText("Total time on this day:    " + (totalTimeOnSelectedDay / 60) + ":" + (totalTimeOnSelectedDay % 60));
+            }
+        });
+    }
+
+    private void callTTOSD() {
+        totalTimeOnSelectedDay = 0;
+        valueCursor = getTodayValues(String.valueOf(c.get(Calendar.YEAR)), String.valueOf(c.get(Calendar.MONTH) + 1), String.valueOf(c.get(Calendar.DAY_OF_MONTH)));
+        valueCursor.moveToFirst();
+
+        for (int i = 0; i < valueCursor.getCount(); i++) {
+            totalTimeOnSelectedDay += valueCursor.getInt(valueCursor.getColumnIndex("seconds"));
+            totalTimeOnSelectedDay += valueCursor.getInt(valueCursor.getColumnIndex("minutes")) * 60;
+            valueCursor.moveToNext();
+        }
+
+        if (minutesHaveDoubleDigits() && secondsHaveDoubleDigits()) {
+            pTotalTimeOnSelectedDay.setText("Total time on this day:    " + (totalTimeOnSelectedDay / 60) + ":" + (totalTimeOnSelectedDay % 60));
+        } else if (!minutesHaveDoubleDigits() && !secondsHaveDoubleDigits()) {
+            pTotalTimeOnSelectedDay.setText("Total time on this day:    0" + (totalTimeOnSelectedDay / 60) + ":0" + (totalTimeOnSelectedDay % 60));
+        } else if (!minutesHaveDoubleDigits() && secondsHaveDoubleDigits()) {
+            pTotalTimeOnSelectedDay.setText("Total time on this day:    0" + (totalTimeOnSelectedDay / 60) + ":" + (totalTimeOnSelectedDay % 60));
+        } else if (minutesHaveDoubleDigits() && !secondsHaveDoubleDigits()) {
+            pTotalTimeOnSelectedDay.setText("Total time on this day:    " + (totalTimeOnSelectedDay / 60) + ":0" + (totalTimeOnSelectedDay % 60));
+        } else {
+            pTotalTimeOnSelectedDay.setText("Total time on this day:    " + (totalTimeOnSelectedDay / 60) + ":" + (totalTimeOnSelectedDay % 60));
+        }
+    }
+
+    private boolean minutesHaveDoubleDigits() {
+        return totalTimeOnSelectedDay / 60 >= 10 && totalTimeOnSelectedDay / 60 < 100;
+    }
+
+    private boolean secondsHaveDoubleDigits() {
+        return totalTimeOnSelectedDay % 60 >= 10;
+    }
+
+    /**
+     *  Removes the last entry added to the database.
+     */
+    public void delete(View v) {
+        //pDatabase.delete(LogContract.LogEntry.TABLE_NAME, null, null); Clears entire database for developmental purposes
+        String del = " DELETE FROM tealog WHERE _ID in(SELECT MAX(_ID) FROM tealog)";
+        pDatabase.execSQL(del);
+        pMainActivityRef.get().pAdapter.swapCursor(getTodayItems(String.valueOf(c.get(Calendar.YEAR)), String.valueOf(c.get(Calendar.MONTH) + 1), String.valueOf(c.get(Calendar.DAY_OF_MONTH))));
+    }
+
+    /**
+     *  Adds an entry to the database.
+     */
+    public static void addItem() {
+        ContentValues cv = new ContentValues();
+        cv.put(LogContract.LogEntry.COLUMN_MINUTES, MainActivity.timerMinutes);
+        cv.put(LogContract.LogEntry.COLUMN_SECONDS, MainActivity.timerSeconds);
+
+        pDatabase.insert(LogContract.LogEntry.TABLE_NAME, null, cv);
+        pMainActivityRef.get().pAdapter.swapCursor(getTodayItems(String.valueOf(c.get(Calendar.YEAR)), String.valueOf(c.get(Calendar.MONTH) + 1), String.valueOf(c.get(Calendar.DAY_OF_MONTH))));
+    }
+
+    /**
+     *  Returns all entries of the current day from the database.
+     */
+    public static Cursor getTodayItems(String year, String month, String dayOfMonth) {
+        if(month.length() == 1) month = "0" + month;
+        if(dayOfMonth.length() == 1) dayOfMonth = "0" + dayOfMonth;
+        return pDatabase.query(
+                LogContract.LogEntry.TABLE_NAME,
+                null,
+                String.format("date(date_time) = '%s-%s-%s'", year, month, dayOfMonth),
+                null,
+                null,
+                null,
+                LogContract.LogEntry.COLUMN_DATE + " DESC"
+        );
+    }
+
+    public static Cursor getTodayValues(String year, String month, String dayOfMonth) {
+        if(month.length() == 1) month = "0" + month;
+        if(dayOfMonth.length() == 1) dayOfMonth = "0" + dayOfMonth;
+        return pDatabase.query(
+                LogContract.LogEntry.TABLE_NAME,
+                new String[]{"minutes", "seconds"},
+                String.format("date(date_time) = '%s-%s-%s'", year, month, dayOfMonth),
+                null,
+                null,
+                null,
+                LogContract.LogEntry.COLUMN_DATE + " DESC"
+        );
+    }
+}
