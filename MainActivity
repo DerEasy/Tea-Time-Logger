@@ -1,0 +1,166 @@
+package com.easy.teatimelogger;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+import android.os.SystemClock;
+import android.view.View;
+import android.widget.Chronometer;
+import android.widget.TextView;
+
+import java.lang.ref.WeakReference;
+import java.time.LocalDate;
+import java.util.Calendar;
+
+import static com.easy.teatimelogger.LogActivity.getTodayItems;
+import static com.easy.teatimelogger.LogActivity.getTodayValues;
+
+public class MainActivity extends AppCompatActivity {
+    public static SQLiteDatabase pDatabase;
+    public LogAdapter pAdapter;
+    private Chronometer chronometer;
+    private static long pauseOffset, sessionTime;
+    private static boolean running;
+    public static int timerSeconds, timerMinutes, totalSeconds, confSecs;
+    public static WeakReference<MainActivity> pMainActivityRef;
+    public LocalDate localDate;
+    public static Calendar c;
+    private View tempView;
+    public Cursor valueCursor;
+    public int totalTimeOnSelectedDay;
+    public TextView pTotalTimeOnSelectedDay;
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        updateMainActivity(this);
+        localDate = LocalDate.now();
+        pTotalTimeOnSelectedDay = (TextView) findViewById(R.id.textTotalMinutes);
+
+        LogDBHelper dbHelper = new LogDBHelper(this);
+        pDatabase = dbHelper.getWritableDatabase();
+        c = Calendar.getInstance();
+        pAdapter = new LogAdapter(this, getTodayItems(String.valueOf(c.get(Calendar.YEAR)), String.valueOf(c.get(Calendar.MONTH) + 1), String.valueOf(c.get(Calendar.DAY_OF_MONTH))));
+        callTTOSD();
+
+        chronometer = findViewById(R.id.chronometer);
+        chronometer.setOnChronometerTickListener(chronometer -> {
+            sessionTime = SystemClock.elapsedRealtime() - chronometer.getBase();
+            timerMinutes = (int) sessionTime / 60 / 1000;
+            timerSeconds = (int) ((sessionTime / 1000) % 60);
+            confSecs = (int) sessionTime / 1000;
+
+            if (confSecs > totalSeconds) {
+                totalSeconds += (confSecs - totalSeconds);
+                callTTOSD();
+                totalTimeOnSelectedDay += totalSeconds;
+            }
+
+            changeTotalTimeText();
+        });
+    }
+
+    @Override
+    public void onBackPressed(){
+        moveTaskToBack(true);
+    }
+
+    protected void onDestroy() {
+        super.onDestroy();
+        sessionChronometer(tempView);
+    }
+
+    private boolean minutesHaveDoubleDigits() {
+        return totalTimeOnSelectedDay / 60 >= 10 && totalTimeOnSelectedDay / 60 < 100;
+    }
+
+    private boolean secondsHaveDoubleDigits() {
+        return totalTimeOnSelectedDay % 60 >= 10;
+    }
+
+    private void changeTotalTimeText() {
+        if (minutesHaveDoubleDigits() && secondsHaveDoubleDigits()) {
+            pTotalTimeOnSelectedDay.setText("Total Time Today:    " + (totalTimeOnSelectedDay / 60) + ":" + (totalTimeOnSelectedDay % 60));
+        } else if (!minutesHaveDoubleDigits() && !secondsHaveDoubleDigits()) {
+            pTotalTimeOnSelectedDay.setText("Total Time Today:    0" + (totalTimeOnSelectedDay / 60) + ":0" + (totalTimeOnSelectedDay % 60));
+        } else if (!minutesHaveDoubleDigits() && secondsHaveDoubleDigits()) {
+            pTotalTimeOnSelectedDay.setText("Total Time Today:    0" + (totalTimeOnSelectedDay / 60) + ":" + (totalTimeOnSelectedDay % 60));
+        } else if (minutesHaveDoubleDigits() && !secondsHaveDoubleDigits()) {
+            pTotalTimeOnSelectedDay.setText("Total Time Today:    " + (totalTimeOnSelectedDay / 60) + ":0" + (totalTimeOnSelectedDay % 60));
+        } else {
+            pTotalTimeOnSelectedDay.setText("Total Time Today:    " + (totalTimeOnSelectedDay / 60) + ":" + (totalTimeOnSelectedDay % 60));
+        }
+    }
+
+    private void updateMainActivity(MainActivity activity) {
+        pMainActivityRef = new WeakReference<>(activity);
+    }
+
+    public void openLog(View v) {
+        Intent intent = new Intent(this, LogActivity.class);
+        startActivity(intent);
+    }
+
+    public void startChronometer(View v) {
+        if (!running) {
+            chronometer.setBase(SystemClock.elapsedRealtime() - pauseOffset);
+            chronometer.start();
+            running = true;
+            tempView = v;
+        }
+    }
+
+    public void pauseChronometer(View v) {
+        if (running) {
+            chronometer.stop();
+            pauseOffset = SystemClock.elapsedRealtime() - chronometer.getBase();
+            running = false;
+        }
+    }
+
+    public void resetChronometer(View v) {
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        pauseOffset = 0;
+        chronometer.stop();
+        running = false;
+        callTTOSD();
+        changeTotalTimeText();
+        totalSeconds = 0;
+    }
+
+    public void sessionChronometer(View v) {
+        if (sessionTime >= 1000) {
+            if (!localDate.isEqual(LocalDate.now())) {
+                localDate = LocalDate.now();
+                c = Calendar.getInstance();
+                callTTOSD();
+                changeTotalTimeText();
+            }
+            totalSeconds = 0;
+            LogActivity.addItem();
+            ((TextView) findViewById(R.id.textSessionTime)).setText("Last Session: " + timerMinutes + "min " + timerSeconds + "s");
+            changeTotalTimeText();
+            resetChronometer(v);
+        }
+    }
+
+    private void callTTOSD() {
+        totalTimeOnSelectedDay = 0;
+        valueCursor = getTodayValues(String.valueOf(c.get(Calendar.YEAR)), String.valueOf(c.get(Calendar.MONTH) + 1), String.valueOf(c.get(Calendar.DAY_OF_MONTH)));
+        valueCursor.moveToFirst();
+
+        for (int i = 0; i < valueCursor.getCount(); i++) {
+            totalTimeOnSelectedDay += valueCursor.getInt(valueCursor.getColumnIndex("seconds"));
+            totalTimeOnSelectedDay += valueCursor.getInt(valueCursor.getColumnIndex("minutes")) * 60;
+            valueCursor.moveToNext();
+        }
+    }
+}
