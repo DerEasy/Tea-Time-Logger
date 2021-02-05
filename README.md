@@ -9,8 +9,8 @@ Stopwatch app that keeps all your stopwatch sessions in a database (date_time - 
 - Intuitive, minimalistic and easy to use
 - Optimised for dark and light mode
 
-![alt text](https://github.com/DerEasy/Tea-Time-Logger/blob/main/Screenshot_23.png?raw=true)
-![alt text](https://github.com/DerEasy/Tea-Time-Logger/blob/main/Screenshot_24.png?raw=true)
+<img src="https://github.com/DerEasy/Tea-Time-Logger/blob/main/Screenshot_23.png" width="200">
+<img src="https://github.com/DerEasy/Tea-Time-Logger/blob/main/Screenshot_24.png" width="200">
 
 
 # Instructions
