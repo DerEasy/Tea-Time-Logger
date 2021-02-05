@@ -27,7 +27,7 @@ Stopwatch app for Android that keeps all your stopwatch sessions in a database (
 - You can only delete entries of the current day, which is to prevent anomalies in display of the entries
 - Sessions continuing into the next day will be saved on that day instead of the day they started in
 - Total Time Display will not reset when continuing into the next day until the current session has been ended
-- Tries to save a running session when the app is being killed by the user a process; no guarantee it will work
+- Tries to save a running session when the app is being killed by the user or a process; no guarantee it will work
 - Should fit on most screens of today
 
 
