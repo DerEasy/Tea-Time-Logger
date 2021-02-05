@@ -33,7 +33,11 @@ public class MainActivity extends AppCompatActivity {
     private View tempView;
     public Cursor valueCursor;
     public int totalTimeOnSelectedDay;
-    public TextView pTotalTimeOnSelectedDay;
+    public TextView pTotalTimeOnSelectedDay, pTextSessionTime;
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String SAVED_SESSION = "session";
+    public static final String SAVED_TOTAL = "total";
+    private String savedSessionText, savedTotalText;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -44,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         updateMainActivity(this);
         localDate = LocalDate.now();
         pTotalTimeOnSelectedDay = (TextView) findViewById(R.id.textTotalMinutes);
+        pTextSessionTime = (TextView) findViewById(R.id.textSessionTime);
+        loadTimeData();
 
         LogDBHelper dbHelper = new LogDBHelper(this);
         pDatabase = dbHelper.getWritableDatabase();
@@ -69,34 +75,57 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         moveTaskToBack(true);
     }
 
     protected void onDestroy() {
         super.onDestroy();
         sessionChronometer(tempView);
+        saveTimeData();
     }
 
-    private boolean minutesHaveDoubleDigits() {
+    private boolean minutesTotalHaveDoubleDigits() {
         return totalTimeOnSelectedDay / 60 >= 10 && totalTimeOnSelectedDay / 60 < 100;
     }
 
-    private boolean secondsHaveDoubleDigits() {
+    private boolean secondsTotalHaveDoubleDigits() {
         return totalTimeOnSelectedDay % 60 >= 10;
     }
 
+    private boolean minutesSessionHaveDoubleDigits() {
+        return timerMinutes / 10 > 0;
+    }
+
+    private boolean secondsSessionHaveDoubleDigits() {
+        return timerSeconds % 60 >= 10;
+    }
+
+    @SuppressLint("SetTextI18n")
     private void changeTotalTimeText() {
-        if (minutesHaveDoubleDigits() && secondsHaveDoubleDigits()) {
+        if (minutesTotalHaveDoubleDigits() && secondsTotalHaveDoubleDigits()) {
             pTotalTimeOnSelectedDay.setText("Total Time Today:    " + (totalTimeOnSelectedDay / 60) + ":" + (totalTimeOnSelectedDay % 60));
-        } else if (!minutesHaveDoubleDigits() && !secondsHaveDoubleDigits()) {
+        } else if (!minutesTotalHaveDoubleDigits() && !secondsTotalHaveDoubleDigits()) {
             pTotalTimeOnSelectedDay.setText("Total Time Today:    0" + (totalTimeOnSelectedDay / 60) + ":0" + (totalTimeOnSelectedDay % 60));
-        } else if (!minutesHaveDoubleDigits() && secondsHaveDoubleDigits()) {
+        } else if (!minutesTotalHaveDoubleDigits() && secondsTotalHaveDoubleDigits()) {
             pTotalTimeOnSelectedDay.setText("Total Time Today:    0" + (totalTimeOnSelectedDay / 60) + ":" + (totalTimeOnSelectedDay % 60));
-        } else if (minutesHaveDoubleDigits() && !secondsHaveDoubleDigits()) {
+        } else if (minutesTotalHaveDoubleDigits() && !secondsTotalHaveDoubleDigits()) {
             pTotalTimeOnSelectedDay.setText("Total Time Today:    " + (totalTimeOnSelectedDay / 60) + ":0" + (totalTimeOnSelectedDay % 60));
         } else {
             pTotalTimeOnSelectedDay.setText("Total Time Today:    " + (totalTimeOnSelectedDay / 60) + ":" + (totalTimeOnSelectedDay % 60));
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void changeSessionTimeText() {
+        if (minutesSessionHaveDoubleDigits() && secondsSessionHaveDoubleDigits()) {
+            pTextSessionTime.setText("Last Session:    " + timerMinutes + ":" + timerSeconds);
+        } if (!minutesSessionHaveDoubleDigits() && !secondsSessionHaveDoubleDigits()) {
+            pTextSessionTime.setText("Last Session:    0" + timerMinutes + ":0" + timerSeconds);
+        } if (!minutesSessionHaveDoubleDigits() && secondsSessionHaveDoubleDigits()) {
+            pTextSessionTime.setText("Last Session:    0" + timerMinutes + ":" + timerSeconds);
+        } if (minutesSessionHaveDoubleDigits() && !secondsSessionHaveDoubleDigits()) {
+            pTextSessionTime.setText("Last Session:    " + timerMinutes + ":0" + timerSeconds);
         }
     }
 
@@ -115,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
             chronometer.start();
             running = true;
             tempView = v;
+            callTTOSD();
+            changeTotalTimeText();
         }
     }
 
@@ -146,13 +177,30 @@ public class MainActivity extends AppCompatActivity {
             }
             totalSeconds = 0;
             LogActivity.addItem();
-            ((TextView) findViewById(R.id.textSessionTime)).setText("Last Session: " + timerMinutes + "min " + timerSeconds + "s");
+            changeSessionTimeText();
+            saveTimeData();
             changeTotalTimeText();
             resetChronometer(v);
         }
     }
 
-    private void callTTOSD() {
+    private void saveTimeData() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(SAVED_SESSION, String.valueOf(pTextSessionTime.getText()));
+        editor.putString(SAVED_TOTAL, String.valueOf(pTotalTimeOnSelectedDay.getText()));
+        editor.apply();
+    }
+
+    private void loadTimeData() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        savedSessionText = sharedPreferences.getString(SAVED_SESSION, "");
+        savedTotalText = sharedPreferences.getString(SAVED_TOTAL, "");
+        pTextSessionTime.setText(savedSessionText);
+        pTotalTimeOnSelectedDay.setText(savedTotalText);
+    }
+
+    public void callTTOSD() {
         totalTimeOnSelectedDay = 0;
         valueCursor = getTodayValues(String.valueOf(c.get(Calendar.YEAR)), String.valueOf(c.get(Calendar.MONTH) + 1), String.valueOf(c.get(Calendar.DAY_OF_MONTH)));
         valueCursor.moveToFirst();
