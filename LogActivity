@@ -36,8 +36,8 @@ import static com.easy.teatimelogger.MainActivity.c;
 public class LogActivity extends AppCompatActivity {
     public CalendarView calendar;
     public Cursor valueCursor;
-    public int totalTimeOnSelectedDay, sessionCounter;
-    public TextView pDateText, pSessionMinutesText, pSessionSecondsText, pTotalTimeOnSelectedDay, pSessionCounterText;
+    public int totalTimeOnSelectedDay, sessionCounter, allTimeTotal;
+    public TextView pDateText, pSessionMinutesText, pSessionSecondsText, pTotalTimeOnSelectedDay, pSessionCounterText, pAllTimeTotalText, pAllTimeSessionText;
     public Button pDeleteButton;
 
     @SuppressLint("SetTextI18n")
@@ -54,6 +54,8 @@ public class LogActivity extends AppCompatActivity {
         pSessionSecondsText = (TextView) findViewById(R.id.textLogSessionSeconds);
         pTotalTimeOnSelectedDay = (TextView) findViewById(R.id.textTotalTimeOnSelectedDay);
         pSessionCounterText = (TextView) findViewById(R.id.textSessionCounter);
+        pAllTimeTotalText = (TextView) findViewById(R.id.textAllTimeTotal);
+        pAllTimeSessionText = (TextView) findViewById(R.id.textAllTimeSessionCounter);
         pDeleteButton = (Button) findViewById(R.id.buttonDelete);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -63,6 +65,7 @@ public class LogActivity extends AppCompatActivity {
         pMainActivityRef.get().pAdapter = new LogAdapter(this, getTodayItems(String.valueOf(c.get(Calendar.YEAR)), String.valueOf(c.get(Calendar.MONTH) + 1), String.valueOf(c.get(Calendar.DAY_OF_MONTH))));
         recyclerView.setAdapter(pMainActivityRef.get().pAdapter);
         callTTOSD(String.valueOf(c.get(Calendar.YEAR)), String.valueOf(c.get(Calendar.MONTH) + 1), String.valueOf(c.get(Calendar.DAY_OF_MONTH)));
+        getTotal();
 
         calendar = (CalendarView) findViewById(R.id.calendarView);
         calendar.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
@@ -80,6 +83,21 @@ public class LogActivity extends AppCompatActivity {
         });
     }
 
+    public void getTotal() {
+        allTimeTotal = 0;
+        valueCursor = getAllValues();
+        valueCursor.moveToFirst();
+
+        for (int i = 0; i < valueCursor.getCount(); i++) {
+            allTimeTotal += valueCursor.getInt(valueCursor.getColumnIndex("minutes")) * 60;
+            allTimeTotal += valueCursor.getInt(valueCursor.getColumnIndex("seconds"));
+            valueCursor.moveToNext();
+        } allTimeTotal /= 60;
+
+        pAllTimeTotalText.setText("T. Time: " + allTimeTotal + " min");
+        pAllTimeSessionText.setText("T. Sessions: " + valueCursor.getCount());
+    }
+
     private void callTTOSD(String year, String month, String day_of_month) {
         totalTimeOnSelectedDay = 0;
         valueCursor = getTodayValues(year, month, day_of_month);
@@ -92,15 +110,15 @@ public class LogActivity extends AppCompatActivity {
         }
 
         if (minutesHaveDoubleDigits() && secondsHaveDoubleDigits()) {
-            pTotalTimeOnSelectedDay.setText("Total time on this day:    " + (totalTimeOnSelectedDay / 60) + ":" + (totalTimeOnSelectedDay % 60));
+            pTotalTimeOnSelectedDay.setText("Total Time on this Day:    " + (totalTimeOnSelectedDay / 60) + ":" + (totalTimeOnSelectedDay % 60));
         } else if (!minutesHaveDoubleDigits() && !secondsHaveDoubleDigits()) {
-            pTotalTimeOnSelectedDay.setText("Total time on this day:    0" + (totalTimeOnSelectedDay / 60) + ":0" + (totalTimeOnSelectedDay % 60));
+            pTotalTimeOnSelectedDay.setText("Total Time on this Day:    0" + (totalTimeOnSelectedDay / 60) + ":0" + (totalTimeOnSelectedDay % 60));
         } else if (!minutesHaveDoubleDigits() && secondsHaveDoubleDigits()) {
-            pTotalTimeOnSelectedDay.setText("Total time on this day:    0" + (totalTimeOnSelectedDay / 60) + ":" + (totalTimeOnSelectedDay % 60));
+            pTotalTimeOnSelectedDay.setText("Total Time on this Day:    0" + (totalTimeOnSelectedDay / 60) + ":" + (totalTimeOnSelectedDay % 60));
         } else if (minutesHaveDoubleDigits() && !secondsHaveDoubleDigits()) {
-            pTotalTimeOnSelectedDay.setText("Total time on this day:    " + (totalTimeOnSelectedDay / 60) + ":0" + (totalTimeOnSelectedDay % 60));
+            pTotalTimeOnSelectedDay.setText("Total Time on this Day:    " + (totalTimeOnSelectedDay / 60) + ":0" + (totalTimeOnSelectedDay % 60));
         } else {
-            pTotalTimeOnSelectedDay.setText("Total time on this day:    " + (totalTimeOnSelectedDay / 60) + ":" + (totalTimeOnSelectedDay % 60));
+            pTotalTimeOnSelectedDay.setText("Total Time on this Day:    " + (totalTimeOnSelectedDay / 60) + ":" + (totalTimeOnSelectedDay % 60));
         }
 
         sessionCounter = valueCursor.getCount();
@@ -152,6 +170,7 @@ public class LogActivity extends AppCompatActivity {
             pMainActivityRef.get().pTextSessionTime.setText("Last Session has been deleted.");
             pMainActivityRef.get().pTotalTimeOnSelectedDay.setText(callTTOSDonMain());
             callTTOSD(String.valueOf(c.get(Calendar.YEAR)), String.valueOf(c.get(Calendar.MONTH) + 1), String.valueOf(c.get(Calendar.DAY_OF_MONTH)));
+            getTotal();
         }
     }
 
@@ -191,6 +210,17 @@ public class LogActivity extends AppCompatActivity {
                 LogContract.LogEntry.TABLE_NAME,
                 new String[]{"minutes", "seconds"},
                 String.format("date(date_time) = '%s-%s-%s'", year, month, dayOfMonth),
+                null,
+                null,
+                null,
+                LogContract.LogEntry.COLUMN_DATE + " DESC"
+        );
+    }
+
+    public static Cursor getAllValues() {
+        return pDatabase.query(LogContract.LogEntry.TABLE_NAME,
+                new String[]{"minutes", "seconds"},
+                null,
                 null,
                 null,
                 null,
