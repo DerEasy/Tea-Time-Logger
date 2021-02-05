@@ -3,7 +3,7 @@ Stopwatch app for Android that keeps all your stopwatch sessions in a database (
 
 # Features
 - Keeps track of all your sessions in a database, sorted by date and selectable with a calendar
-- Displays the total time and how many sessions there have been on the selected day
+- Displays the total time and how many sessions there have been on the selected day, as well as total of all time
 - Displays live-updated total time and saves your most recent session time on the main screen
 - Lightweight: APK is 2.3 MB
 - Intuitive, minimalistic and easy to use
