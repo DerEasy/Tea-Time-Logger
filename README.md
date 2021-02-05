@@ -1,4 +1,4 @@
-# Tea-Time-Logger
+# Tea-Time-Logger ![alt text](https://github.com/DerEasy/Tea-Time-Logger/blob/main/ttl_launcher_icon.png?raw=true)
 Stopwatch app that keeps all your stopwatch sessions in a database (date_time - minutes - seconds) with some neat little features and statistics.
 
 # Features
@@ -11,7 +11,6 @@ Stopwatch app that keeps all your stopwatch sessions in a database (date_time - 
 
 ![alt text](https://github.com/DerEasy/Tea-Time-Logger/blob/main/Screenshot_23.png?raw=true)
 ![alt text](https://github.com/DerEasy/Tea-Time-Logger/blob/main/Screenshot_24.png?raw=true)
-![alt text](https://github.com/DerEasy/Tea-Time-Logger/blob/main/ttl_launcher_icon.png?raw=true)
 
 
 # Instructions
