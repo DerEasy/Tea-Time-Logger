@@ -7,6 +7,7 @@ Stopwatch app that keeps all your stopwatch sessions in a database (date_time - 
 - Displays live-updated total time and saves your most recent session time on the main screen
 - Lightweight: APK is 2.3 MB
 - Intuitive, minimalistic and easy to use
+- Optimised for dark and light mode
 
 
 # Instructions
