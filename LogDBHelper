@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 
 public class LogDBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "teatimelog.db";
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
 
     public LogDBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -30,7 +30,10 @@ public class LogDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + LogEntry.TABLE_NAME);
-        onCreate(db);
+        //LEAVE THIS COMMENTED OUT OR ALL DATA WILL BE LOST ON A REAL DEVICE
+        //ONLY FOR DEVELOPMENTAL PURPOSES
+        //REMEMBER TO COMMENT OUT AGAIN AFTER YOU ARE DONE
+        //db.execSQL("DROP TABLE IF EXISTS " + LogEntry.TABLE_NAME);
+        //onCreate(db);
     }
 }
