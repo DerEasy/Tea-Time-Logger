@@ -21,23 +21,33 @@ import static com.easy.teatimelogger.LogActivity.getTodayItems;
 import static com.easy.teatimelogger.LogActivity.getTodayValues;
 
 public class MainActivity extends AppCompatActivity {
-    public static SQLiteDatabase pDatabase;
-    public LogAdapter pAdapter;
-    private Chronometer chronometer;
-    private static long pauseOffset, sessionTime;
-    private static boolean running;
-    public static int timerSeconds, timerMinutes, totalSeconds, confSecs;
-    public static WeakReference<MainActivity> pMainActivityRef;
-    public LocalDate localDate;
-    public static Calendar c;
-    private View tempView;
-    public Cursor valueCursor;
-    public int totalTimeOnSelectedDay;
-    public TextView pTotalTimeOnSelectedDay, pTextSessionTime;
+    //SharedPreferences. Used for saving the total time and last session TextView Strings.
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String SAVED_SESSION = "session";
     public static final String SAVED_TOTAL = "total";
     private String savedSessionText, savedTotalText;
+
+    //Database, Reference to MainActivity instance, Calendar and timer values for all classes
+    public static SQLiteDatabase pDatabase;
+    public static WeakReference<MainActivity> pMainActivityRef;
+    public static Calendar c;
+    public static int timerSeconds, timerMinutes;
+
+    //Pause offset to calculate time when session has been paused
+    //Session Time in milliseconds and boolean to check if session is running
+    private static long pauseOffset, sessionTime;
+    private static boolean running;
+
+    //Local Date compares calendar and local date to update TextViews if they are of a past date
+    public LogAdapter pAdapter;
+    public LocalDate localDate;
+    public TextView pTotalTimeOnSelectedDay, pTextSessionTime;
+
+    //Chronometer class instance, helper view instance to pass button calls and time calculating variables
+    private Chronometer chronometer;
+    private View tempView;
+    private int totalTimeOnSelectedDay, totalSeconds, confSecs;
+
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -45,12 +55,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Assigns WeakReference object current class instance
         updateMainActivity(this);
+
+        //Local Date comparison pre-requisite
         localDate = LocalDate.now();
+
+        //Assigns variables their corresponding Views in MainActivity and loads SharedPreferences data
         pTotalTimeOnSelectedDay = (TextView) findViewById(R.id.textTotalMinutes);
         pTextSessionTime = (TextView) findViewById(R.id.textSessionTime);
         loadTimeData();
 
+        //Sets up database and calls update on Total Time display
         LogDBHelper dbHelper = new LogDBHelper(this);
         pDatabase = dbHelper.getWritableDatabase();
         c = Calendar.getInstance();
@@ -58,49 +74,79 @@ public class MainActivity extends AppCompatActivity {
         callTTOSD();
 
         chronometer = findViewById(R.id.chronometer);
+
+        //Lambda function
+        //Refreshes sessionTime every tick (second)
         chronometer.setOnChronometerTickListener(chronometer -> {
             sessionTime = SystemClock.elapsedRealtime() - chronometer.getBase();
             timerMinutes = (int) sessionTime / 60 / 1000;
             timerSeconds = (int) ((sessionTime / 1000) % 60);
             confSecs = (int) sessionTime / 1000;
 
+            //Refreshes Total Time variable
             if (confSecs > totalSeconds) {
                 totalSeconds += (confSecs - totalSeconds);
                 callTTOSD();
                 totalTimeOnSelectedDay += totalSeconds;
             }
 
+            //Updates Total Time display
             changeTotalTimeText();
         });
     }
 
+    /**
+     * Ensures that the app will not be killed when user presses back button
+     */
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
     }
 
+    /**
+     * Attempt to save current data and end session if app is killed
+     */
     protected void onDestroy() {
         super.onDestroy();
         sessionChronometer(tempView);
         saveTimeData();
     }
 
+    /**
+     * Checks if Total Time minutes have double digits
+     * @return true if double digits
+     */
     private boolean minutesTotalHaveDoubleDigits() {
-        return totalTimeOnSelectedDay / 60 >= 10 && totalTimeOnSelectedDay / 60 < 100;
+        return totalTimeOnSelectedDay / 60 >= 10;
     }
 
+    /**
+     * Checks if Total Time seconds have double digits
+     * @return true if double digits
+     */
     private boolean secondsTotalHaveDoubleDigits() {
         return totalTimeOnSelectedDay % 60 >= 10;
     }
 
+    /**
+     * Checks if Session Time minutes have double digits
+     * @return true if double digits
+     */
     private boolean minutesSessionHaveDoubleDigits() {
         return timerMinutes / 10 > 0;
     }
 
+    /**
+     * Checks if Session Time seconds have double digits
+     * @return true if double digits
+     */
     private boolean secondsSessionHaveDoubleDigits() {
         return timerSeconds % 60 >= 10;
     }
 
+    /**
+     * Updates Total Time display with correct formatting
+     */
     @SuppressLint("SetTextI18n")
     private void changeTotalTimeText() {
         if (minutesTotalHaveDoubleDigits() && secondsTotalHaveDoubleDigits()) {
@@ -116,6 +162,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Updates Session Time display with correct formatting
+     */
     @SuppressLint("SetTextI18n")
     private void changeSessionTimeText() {
         if (minutesSessionHaveDoubleDigits() && secondsSessionHaveDoubleDigits()) {
@@ -129,15 +178,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Assign class instance to WeakReference object.
+     * CRITICAL for app functionality (LogActivity).
+     * @param activity must be key word 'this'
+     */
     private void updateMainActivity(MainActivity activity) {
         pMainActivityRef = new WeakReference<>(activity);
     }
 
+    /**
+     *  Creates new object of class LogActivity and opens the log window
+     */
     public void openLog(View v) {
         Intent intent = new Intent(this, LogActivity.class);
         startActivity(intent);
     }
 
+    /**
+     *  Starts chronometer
+     */
     public void startChronometer(View v) {
         if (!running) {
             chronometer.setBase(SystemClock.elapsedRealtime() - pauseOffset);
@@ -149,6 +209,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *  Pauses chronometer
+     */
     public void pauseChronometer(View v) {
         if (running) {
             chronometer.stop();
@@ -157,6 +220,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *  Resets chronometer
+     */
     public void resetChronometer(View v) {
         chronometer.setBase(SystemClock.elapsedRealtime());
         pauseOffset = 0;
@@ -167,8 +233,13 @@ public class MainActivity extends AppCompatActivity {
         totalSeconds = 0;
     }
 
+    /**
+     *  Ends the current session, writes to database and updates TextViews and saved data
+     */
     public void sessionChronometer(View v) {
+        //Only execute if session actually has data to save, ergo at least 1 second
         if (sessionTime >= 1000) {
+            //Reset Total Time display if session ended in another day than it started in
             if (!localDate.isEqual(LocalDate.now())) {
                 localDate = LocalDate.now();
                 c = Calendar.getInstance();
@@ -184,6 +255,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Saves data to SharedPreferences
+     */
     private void saveTimeData() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -192,6 +266,9 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    /**
+     * Loads data from SharedPreferences
+     */
     private void loadTimeData() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         savedSessionText = sharedPreferences.getString(SAVED_SESSION, "");
@@ -200,9 +277,12 @@ public class MainActivity extends AppCompatActivity {
         pTotalTimeOnSelectedDay.setText(savedTotalText);
     }
 
-    public void callTTOSD() {
+    /**
+     * Updates Total Time of Selected Day (Today)
+     */
+    private void callTTOSD() {
         totalTimeOnSelectedDay = 0;
-        valueCursor = getTodayValues(String.valueOf(c.get(Calendar.YEAR)), String.valueOf(c.get(Calendar.MONTH) + 1), String.valueOf(c.get(Calendar.DAY_OF_MONTH)));
+        Cursor valueCursor = getTodayValues(String.valueOf(c.get(Calendar.YEAR)), String.valueOf(c.get(Calendar.MONTH) + 1), String.valueOf(c.get(Calendar.DAY_OF_MONTH)));
         valueCursor.moveToFirst();
 
         for (int i = 0; i < valueCursor.getCount(); i++) {
