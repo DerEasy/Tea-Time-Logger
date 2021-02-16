@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsActivity">
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchResetDialog"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="Reset Session"
+        android:textColor="?attr/colorOnSecondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textSettingsConfDialog"
+        app:layout_constraintTop_toBottomOf="@+id/textSettingsConfDialog" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchDeleteDialog"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="Database entry deletion"
+        android:textColor="?attr/colorOnSecondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/switchResetDialog"
+        app:layout_constraintTop_toBottomOf="@+id/switchResetDialog" />
+
+    <TextView
+        android:id="@+id/textSettingsConfDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enable confirmation dialog for..."
+        android:textColor="?attr/colorOnSecondary"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.060000002" />
+
+    <TextView
+        android:id="@+id/textSettingsGoals"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Set your daily goal (0 to disable):"
+        android:textColor="?attr/colorOnSecondary"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/switchDeleteDialog"
+        app:layout_constraintTop_toBottomOf="@+id/switchDeleteDialog" />
+
+    <EditText
+        android:id="@+id/editGoalMinutes"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:ems="10"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        app:layout_constraintStart_toStartOf="@+id/textSettingsGoals"
+        app:layout_constraintTop_toBottomOf="@+id/textSettingsGoals" />
+
+    <Button
+        android:id="@+id/buttonConfirmGoal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Set"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editGoalMinutes"
+        app:layout_constraintStart_toEndOf="@+id/editGoalMinutes" />
+
+    <TextView
+        android:id="@+id/textCurrentGoal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text=""
+        android:textColor="?attr/colorOnSecondary"
+        app:layout_constraintStart_toStartOf="@+id/editGoalMinutes"
+        app:layout_constraintTop_toBottomOf="@+id/editGoalMinutes" />
+</androidx.constraintlayout.widget.ConstraintLayout>
