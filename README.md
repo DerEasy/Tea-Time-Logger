@@ -1,6 +1,16 @@
 # Tea Time Logger <img src="https://github.com/DerEasy/Tea-Time-Logger/blob/main/Images/Icons/App%20Icon%20Vector%20Graphic.svg" width="48">
 Stopwatch app that keeps all your stopwatch sessions in a database with a log, statistics, goal system, backup and restore functions, database insertion/editing/deletion functions and some other features.
 
+
+# Download
+Download above in the main branch or in the release tab (it's the TTLv2.0-stable.apk file). Links to both here:
+
+https://github.com/DerEasy/Tea-Time-Logger/releases/tag/v2.0
+
+https://github.com/DerEasy/Tea-Time-Logger/blob/main/TTLv2.0-stable.apk
+
+
+
 # Features
 - Keeps track of all your sessions in a database, sorted by date and selectable with a calendar
 - Displays the total time and how many sessions there have been on the selected day, as well as total of all time
