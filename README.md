@@ -71,4 +71,4 @@ Uninstalling (and reinstalling) will delete the database and all your data with 
 
 Updating the app will not.
 
-For this reason, always create a backup (which you can copy to your PC or a USB stick etc. as well)
+For this reason, always create a backup.
