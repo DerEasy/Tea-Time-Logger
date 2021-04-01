@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Chronometer
+        android:id="@+id/chronometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display3"
+        android:textColor="?attr/colorOnSecondary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.110000014" />
+
+    <Button
+        android:id="@+id/buttonStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/pill_button"
+        android:onClick="startChronometer"
+        android:text="@string/buttonStart"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textSessionTime" />
+
+    <Button
+        android:id="@+id/buttonPause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/pill_button"
+        android:onClick="pauseChronometer"
+        android:text="@string/buttonPause"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/buttonStart"
+        app:layout_constraintHorizontal_bias="0.85"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textSessionTime" />
+
+    <Button
+        android:id="@+id/buttonReset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/pill_button"
+        android:text="@string/buttonReset"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toEndOf="@+id/buttonStart"
+        app:layout_constraintTop_toBottomOf="@+id/textSessionTime" />
+
+    <Button
+        android:id="@+id/buttonSession"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/pill_button"
+        android:onClick="sessionChronometer"
+        android:text="@string/buttonSession"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textTotalMinutes" />
+
+    <TextView
+        android:id="@+id/textSessionTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="?attr/colorOnSecondary"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline2"
+        android:textSize="14sp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textSessionTimeText" />
+
+    <TextView
+        android:id="@+id/textSessionTimeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/lastSession"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline2"
+        android:textColor="?attr/colorOnSecondary"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chronometer" />
+
+    <TextView
+        android:id="@+id/textTotalMinutes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="?attr/colorOnSecondary"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textTotalMinutesText" />
+
+    <TextView
+        android:id="@+id/textTotalMinutesText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/textTotalMinutesText"
+        android:textColor="?attr/colorOnSecondary"
+        android:textSize="20sp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonStart" />
+
+    <ProgressBar
+        android:id="@+id/goalChart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="16dp"
+        android:indeterminateOnly="false"
+        android:progressDrawable="@drawable/goalchart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/imageButtonSettings"
+        app:layout_constraintStart_toEndOf="@+id/imageButtonLog"
+        app:layout_constraintTop_toBottomOf="@+id/textMainGoal"
+        app:layout_constraintVertical_bias="0.0"
+        tools:progress="60" />
+
+    <TextView
+        android:id="@+id/textProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@id/goalChart"
+        app:layout_constraintEnd_toEndOf="@+id/goalChart"
+        app:layout_constraintStart_toStartOf="@+id/goalChart"
+        app:layout_constraintTop_toTopOf="@+id/goalChart"
+        tools:text="60%" />
+
+    <TextView
+        android:id="@+id/textMainGoal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/daily_goal"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline2"
+        android:textColor="?attr/colorOnSecondary"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/buttonSession"
+        app:layout_constraintStart_toStartOf="@+id/buttonSession"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSession" />
+
+    <ImageButton
+        android:id="@+id/imageButtonSettings"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#00000000"
+        android:contentDescription="@string/buttonSettings"
+        android:onClick="openSettings"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonSession"
+        app:layout_constraintEnd_toEndOf="@+id/buttonReset"
+        app:layout_constraintStart_toEndOf="@+id/buttonSession"
+        app:layout_constraintTop_toTopOf="@+id/buttonSession"
+        app:srcCompat="@drawable/settings_icon" />
+
+    <ImageButton
+        android:id="@+id/imageButtonLog"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#00000000"
+        android:contentDescription="@string/buttonLog"
+        android:onClick="openLog"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonSession"
+        app:layout_constraintEnd_toStartOf="@+id/buttonSession"
+        app:layout_constraintStart_toStartOf="@+id/buttonPause"
+        app:layout_constraintTop_toTopOf="@+id/buttonSession"
+        app:srcCompat="@drawable/log_icon" />
+</androidx.constraintlayout.widget.ConstraintLayout>

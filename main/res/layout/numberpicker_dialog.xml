@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <NumberPicker
+        android:id="@+id/numberPickerHour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/numberPickerMinute"
+        app:layout_constraintTop_toTopOf="@+id/numberPickerMinute" />
+
+    <NumberPicker
+        android:id="@+id/numberPickerMinute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <NumberPicker
+        android:id="@+id/numberPickerSecond"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintStart_toEndOf="@+id/numberPickerMinute"
+        app:layout_constraintTop_toTopOf="@+id/numberPickerMinute" />
+
+    <TextView
+        android:id="@+id/textPickerHour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="?attr/colorOnSecondary"
+        android:textSize="14sp"
+        android:text="HOUR"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline2"
+        app:layout_constraintEnd_toEndOf="@+id/numberPickerHour"
+        app:layout_constraintStart_toStartOf="@+id/numberPickerHour"
+        app:layout_constraintTop_toBottomOf="@+id/numberPickerHour" />
+
+    <TextView
+        android:id="@+id/textPickerMinute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="?attr/colorOnSecondary"
+        android:textSize="14sp"
+        android:text="MINUTE"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline2"
+        app:layout_constraintEnd_toEndOf="@+id/numberPickerMinute"
+        app:layout_constraintStart_toStartOf="@+id/numberPickerMinute"
+        app:layout_constraintTop_toBottomOf="@+id/numberPickerMinute" />
+
+    <TextView
+        android:id="@+id/textPickerSecond"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="?attr/colorOnSecondary"
+        android:textSize="14sp"
+        android:text="SECOND"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline2"
+        app:layout_constraintEnd_toEndOf="@+id/numberPickerSecond"
+        app:layout_constraintStart_toStartOf="@+id/numberPickerSecond"
+        app:layout_constraintTop_toBottomOf="@+id/numberPickerSecond" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
