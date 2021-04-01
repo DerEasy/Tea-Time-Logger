@@ -39,6 +39,15 @@ Settings
 - Restore Icon: Restores the backup in the path /TeaTimeLogger Backup/teatimelog.db if there is a backup
 
 
+# Notice: Backup and Restore
+This is how it works:
+
+The backup copys the database file (teatimelog.db) from your device storage to the internal storage, which you as a normal Android user can access. To stop the app from hogging too much of your storage space, any previous backup file will be overwritten, unless you renamed it beforehand. You will find the file in the path /TeaTimeLogger Backup/teatimelog.db
+
+Be sure NOT to rename the file NOR the folder it is in. They MUST be left with their default names in their default locations or restoration WILL NOT work. You can copy, move and upload the file wherever you want, just beware where exactly to put it back in the case of restoration.
+
+If above criteria is met (which it always will be if you don't alter it yourself), the app's restore button will then take that backup file and overwrite the app's internal database with it. Beware that this will IRREVERSIBLY delete the app's internal database and replace it with the backup.
+
 # Behaviour
 - Sessions continuing into the next day will be saved on that day instead of the day they started in
 - Total Time Display will not reset when continuing into the next day until the current session has been ended
@@ -49,5 +58,7 @@ Settings
 
 # Warning
 Uninstalling (and reinstalling) will delete the database and all your data with it!
+
 Updating the app will not.
+
 For this reason, always create a backup (which you can copy to your PC or a USB stick etc. as well)
