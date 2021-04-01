@@ -72,3 +72,16 @@ Uninstalling (and reinstalling) will delete the database and all your data with 
 Updating the app will not.
 
 For this reason, always create a backup.
+
+
+# Changelog v2.0-stable
+- Complete design overhaul
+- Improved visuals, new icons, better wording in some texts
+- Optimisations for all kinds of device layouts
+- Added feature to insert entries manually into the database
+- Added feature to delete any and multiple entries from the database
+- Added feature to edit any entry in the database
+- Added feature to backup and restore database locally
+- Added various Toast messages all around the app to improve user friendliness
+- Code optimisations
+- Many smaller bug fixes
