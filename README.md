@@ -3,7 +3,7 @@ Stopwatch app that keeps all your stopwatch sessions in a database with a log, s
 
 
 # Download
-Download above in the main branch or in the release tab (it's the TTLv2.0-stable.apk file). Links to both here:
+Download above in the main branch or in the release tab (it's the TTLv2.0-stable.apk file in the Assets). Links to both here:
 
 https://github.com/DerEasy/Tea-Time-Logger/releases/tag/v2.0
 
@@ -46,7 +46,7 @@ Settings
 - Deleting Entries Switch: Enables a dialog to warn user before deleting an entry in the database
 - Daily Goal: Enables/Disables the progress bar on the Main Screen and sets its goal duration. Possible values are 0 to 1440; 0 (or empty) will disable the progress bar
 - Backup Icon: Creates a backup of the database in the device's internal storage. Path: /TeaTimeLogger Backup/teatimelog.db
-- Restore Icon: Restores the backup in the path /TeaTimeLogger Backup/teatimelog.db if there is a backup
+- Restore Icon: Restores the backup located in /TeaTimeLogger Backup/teatimelog.db if there is one
 
 
 # Notice: Backup and Restore
