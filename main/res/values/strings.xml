@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Tea Time Logger</string>
+    <string name="buttonLog">Open Log</string>
+    <string name="buttonStart">START</string>
+    <string name="buttonPause">PAUSE</string>
+    <string name="buttonReset">RESET</string>
+    <string name="buttonSession">END SESSION</string>
+    <string name="buttonSettings">Settings</string>
+    <string name="daily_goal">DAILY GOAL</string>
+    <string name="insert">Insert an entry into the database</string>
+    <string name="delete">Delete an entry from the database</string>
+    <string name="edit">Edit an entry in the database</string>
+    <string name="textTotalMinutesText">TOTAL TODAY</string>
+    <string name="lastSession">LAST SESSION</string>
+</resources>
