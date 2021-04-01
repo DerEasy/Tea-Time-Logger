@@ -10,7 +10,8 @@ Stopwatch app that keeps all your stopwatch sessions in a database (date_time - 
 - Intuitive, minimalistic and easy to use
 - Optimised for dark and light mode
 
-<img src="https://github.com/DerEasy/Tea-Time-Logger/blob/main/Screenshot_2.png" width="200"> <img src="https://github.com/DerEasy/Tea-Time-Logger/blob/main/Screenshot_3.png" width="200"> <img src="https://github.com/DerEasy/Tea-Time-Logger/blob/main/Screenshot_4.png" width="200"> <img src="https://github.com/DerEasy/Tea-Time-Logger/blob/main/Screenshot_1.png" width="200"> <img src="https://github.com/DerEasy/Tea-Time-Logger/blob/main/Screenshot_5.png" width="200">
+<img src="https://github.com/DerEasy/Tea-Time-Logger/blob/main/Images/Screenshots/Main.png" width="200"> <img src="https://github.com/DerEasy/Tea-Time-Logger/blob/main/Images/Screenshots/Log.png" width="200"> <img src="https://github.com/DerEasy/Tea-Time-Logger/blob/main/Images/Screenshots/Settings.png" width="200"> <img src="https://github.com/DerEasy/Tea-Time-Logger/blob/main/Images/Screenshots/DeletePicker.png" width="200"> <img src="https://github.com/DerEasy/Tea-Time-Logger/blob/main/Images/Screenshots/EditPicker.png" width="200"> <img src="https://github.com/DerEasy/Tea-Time-Logger/blob/main/Images/Screenshots/EditDialog.png" width="200">
+
 
 
 # Instructions
